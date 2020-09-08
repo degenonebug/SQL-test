@@ -1,0 +1,40 @@
+Тест на SQL
+
+create table public.tbl_employee (e_id serial primary key,
+								 d_id integer,
+								 c_id integer,
+								 e_name varchar(200),
+								 e_salary decimal(8,2))
+					 
+create table public.tbl_department(d_id serial primary key,
+								  d_name varchar(100))
+                  
+create table public.tbl_chief(c_id serial primary key,
+							 d_id integer,
+							 c_name varchar(200),
+							 c_salary decimal(8,2))
+               
+ alter table public.tbl_employee add constraint d_id foreign key(d_id) references public.tbl_department (d_id)
+ alter table public.tbl_chief add constraint d_id foreign key(d_id) references public.tbl_department (d_id)
+ alter table public.tbl_employee add constraint c_id foreign key(c_id) references public.tbl_chief (c_id)		
+
+
+
+1. Вывести список сотрудников, получающих заработную плату большую чем у непосредственного руководителя 
+Select  e_name, e_salary, c_salary From tbl_employee, tbl_chief WHERE e_salary >  c_salary;
+
+2. Вывести список сотрудников, получающих максимальную заработную плату в своем отделе 
+Select d_id,  Max(e_salary) From tbl_employee Group By d_id;
+
+3. Вывести список ID отделов, количество сотрудников в которых не превышает 3 человек
+			 
+SELECT d_id,COUNT(*) < 3 AS "Number of employees"
+FROM tbl_employee
+GROUP BY d_id;	
+
+
+4. Вывести список сотрудников, не имеющих назначенного руководителя, работающего в том-же отделе 
+Select e_name From tbl_employee, tbl_chief Where tbl_chief.d_id != tbl_employee.d_id;
+
+5. Найти список ID отделов с максимальной суммарной зарплатой сотрудников
+Select d_name, SUM(e_Salary) From tbl_employee Group By d_id;
